@@ -1,18 +1,23 @@
 # Maintainer: tocic <tocic at protonmail dot ch>
 
 pkgname=nanobench
-pkgver=4.3.7
+pkgver=4.3.7.12.g92d1822
 pkgrel=1
 pkgdesc="Simple, fast, accurate single-header microbenchmarking functionality for C++11/14/17/20"
 arch=("x86_64")
 url="https://nanobench.ankerl.com"
 license=("MIT")
-makedepends=("cmake")
-source=("${pkgname}-${pkgver}.tar.gz::https://github.com/martinus/nanobench/archive/v${pkgver}.tar.gz")
-b2sums=("f0094be49843bdea1a43e02733ff33aaa2c7bfef583c57e22704f5f9602d60599f7a65275585f879732b18ea067dc78c0e3dbb7c647f58739d0202424fbc8a3e")
+makedepends=('cmake' 'git')
+source=('git+https://github.com/martinus/nanobench')
+md5sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/nanobench"
+  git describe --always --tags | sed -e 's|^v||' -e 's|-|.|g'
+}
 
 build() {
-  cmake -B "build/" -S "${pkgname}-${pkgver}" \
+  cmake -B "build/" -S "${pkgname}" \
     -D CMAKE_BUILD_TYPE:STRING="None" \
     -D CMAKE_INSTALL_PREFIX:PATH="/usr/" \
     -Wno-dev
@@ -25,5 +30,5 @@ package() {
 
   install -D --target-directory="${pkgdir}/usr/share/licenses/${pkgname}/" \
     --mode=644 \
-    "${pkgname}-${pkgver}/LICENSE"
+    "${pkgname}/LICENSE"
 }
